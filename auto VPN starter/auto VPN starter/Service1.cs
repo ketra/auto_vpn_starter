@@ -68,7 +68,7 @@ namespace auto_VPN_starter
             return false;
         }
         /// <summary>
-        /// Function the reports the users time logged in and returns this within a timespan
+        /// Function that reports the users time logged in and returns this within a Timespan
         /// </summary>
         /// <returns></returns>
         public static TimeSpan GetUptimeUser()
