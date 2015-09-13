@@ -89,7 +89,7 @@ namespace auto_VPN_starter
             return DateTime.Now.ToUniversalTime() - lastBootUp.ToUniversalTime();
         }
         /// <summary>
-        /// Function for getting the current systems uptime
+        /// Function for getting the current systems Uptime
         /// </summary>
         /// <returns>Timespan Uptime</returns>
         public static TimeSpan GetUptime()
