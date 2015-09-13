@@ -92,6 +92,7 @@ namespace auto_VPN_starter
         /// Function for getting the current systems Uptime
         /// </summary>
         /// <returns>Timespan Uptime</returns>
+        /// 
         public static TimeSpan GetUptime()
         {
             ManagementObject mo = new ManagementObject(@"\\.\root\cimv2:Win32_OperatingSystem=@");
