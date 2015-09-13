@@ -85,7 +85,10 @@ namespace auto_VPN_starter
             }
             return DateTime.Now.ToUniversalTime() - lastBootUp.ToUniversalTime();
         }
-
+        /// <summary>
+        /// Function for getting the current systems uptime
+        /// </summary>
+        /// <returns>Timespan Uptime</returns>
         public static TimeSpan GetUptime()
         {
             ManagementObject mo = new ManagementObject(@"\\.\root\cimv2:Win32_OperatingSystem=@");
