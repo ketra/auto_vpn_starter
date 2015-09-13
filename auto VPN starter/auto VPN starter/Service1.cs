@@ -67,6 +67,7 @@ namespace auto_VPN_starter
             }
             return false;
         }
+
         /// <summary>
         /// Function that reports the users time logged in and returns this within a Timespan
         /// </summary>
