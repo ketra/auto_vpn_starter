@@ -71,6 +71,8 @@ namespace auto_VPN_starter
         /// Function that reports the users time logged in and returns this within a Timespan
         /// </summary>
         /// <returns></returns>
+        /// 
+
         public static TimeSpan GetUptimeUser()
         {
             ManagementScope ms = new ManagementScope("\\root\\cimv2");
