@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Management;
-using System.Diagnostics;
 using Microsoft.Win32;
 
 namespace auto_VPN_starter
@@ -19,9 +18,32 @@ namespace auto_VPN_starter
         public System.Management.ManagementEventWatcher StartWtch;
         public System.Management.ManagementEventWatcher StopWtch;
         public Thread MainThread;
+        DateTime Resumed;
         public Service1()
         {
             InitializeComponent();
+            SystemEvents.PowerModeChanged += SystemEvents_PowerModeChanged;
+        }
+
+        void SystemEvents_PowerModeChanged(object sender, PowerModeChangedEventArgs e)
+        {
+            switch (e.Mode)
+            {
+                case PowerModes.Resume:
+                    Resumed = DateTime.Now;
+                    ServiceController service = new ServiceController("OpenVPNService", "Localhost");
+                    if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.StopPending)
+                    {
+                        service.Stop();
+                    }
+                    if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
+                    {
+                        service.Start();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void OnStart(string[] args)
@@ -45,6 +67,7 @@ namespace auto_VPN_starter
             StopWtch.Start();
             StartWtch.Start();
         }
+
 
         void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
         {
@@ -91,6 +114,13 @@ namespace auto_VPN_starter
             return DateTime.Now.ToUniversalTime() - lastBootUp.ToUniversalTime();
         }
 
+        public TimeSpan GetResumeTime()
+        {
+            return DateTime.Now.ToUniversalTime() - Resumed.ToUniversalTime();
+        }
+        
+
+
         /// <summary>
         /// Function for getting the current systems Uptime
         /// </summary>
@@ -106,7 +136,7 @@ namespace auto_VPN_starter
         void mgmtWtch_EventArrived(object sender, EventArrivedEventArgs e)
         {
             TimeSpan minuptime = new TimeSpan(0,10,0);
-            if (CurrentlyRunning("kodi") || GetUptime() < minuptime || GetUptimeUser() < minuptime)
+            if (CurrentlyRunning("kodi") || CurrentlyRunning("outlook") || GetUptime() < minuptime || GetUptimeUser() < minuptime || GetResumeTime() < minuptime)
             {
                 ServiceController service = new ServiceController("OpenVPNService", "Localhost");
                 if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
