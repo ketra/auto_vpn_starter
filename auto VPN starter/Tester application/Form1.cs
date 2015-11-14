@@ -39,10 +39,12 @@ namespace Tester_application
                     if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.StopPending)
                     {
                         service.Stop();
+                        service.WaitForStatus(ServiceControllerStatus.Stopped);
                     }
                     if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
                     {
                         service.Start();
+                        service.WaitForStatus(ServiceControllerStatus.Running);
                     }
                     break;
                 default:
