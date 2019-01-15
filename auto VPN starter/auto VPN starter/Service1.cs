@@ -32,17 +32,7 @@ namespace auto_VPN_starter
                 case PowerModes.Resume:
                     Task wait = Task.Delay(5000);
                     Resumed = DateTime.Now;
-                    ServiceController service = new ServiceController("OpenVPNService", "Localhost");
-                    if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.StopPending)
-                    {
-                        service.Stop();
-                        service.WaitForStatus(ServiceControllerStatus.Stopped);
-                    }
-                    if (service.Status != ServiceControllerStatus.Running && service.Status != ServiceControllerStatus.StartPending)
-                    {
-                        service.Start();
-                        service.WaitForStatus(ServiceControllerStatus.Running);
-                    }
+                    RestartService("OpenVPNService",30000);
                     break;
                 default:
                     break;
@@ -70,7 +60,29 @@ namespace auto_VPN_starter
             StopWtch.Start();
             StartWtch.Start();
         }
+        void RestartService(string serviceName, int timeoutMilliseconds)
+        {
+            ServiceController service = new ServiceController(serviceName);
+            try
+            {
+                int millisec1 = Environment.TickCount;
+                TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds);
 
+                service.Stop();
+                service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+
+                // count the rest of the timeout
+                int millisec2 = Environment.TickCount;
+                timeout = TimeSpan.FromMilliseconds(timeoutMilliseconds - (millisec2-millisec1));
+
+                service.Start();
+                service.WaitForStatus(ServiceControllerStatus.Running, timeout);
+           }
+            catch
+            {
+            // ...
+            }
+        }
 
         void SystemEvents_SessionEnding(object sender, SessionEndingEventArgs e)
         {
