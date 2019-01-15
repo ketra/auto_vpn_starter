@@ -30,6 +30,7 @@ namespace auto_VPN_starter
             switch (e.Mode)
             {
                 case PowerModes.Resume:
+                    Task wait = Task.Delay(5000);
                     Resumed = DateTime.Now;
                     ServiceController service = new ServiceController("OpenVPNService", "Localhost");
                     if (service.Status != ServiceControllerStatus.Stopped && service.Status != ServiceControllerStatus.StopPending)
